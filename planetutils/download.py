@@ -3,6 +3,15 @@ import os
 import subprocess
 import requests
 from . import log
+import boto3
+import pathlib
+
+s3_client = boto3.client('s3')
+
+def download_s3(bucket, key, outpath):
+    pathlib.Path(outpath).parent.mkdir(parents=True, exist_ok=True)
+    s3_client.download_file(bucket, key, outpath)
+
 
 def download(url, outpath):
     r = requests.get(url, stream=True)

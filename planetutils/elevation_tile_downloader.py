@@ -51,8 +51,11 @@ class ElevationDownloader(object):
         if prefix:
             od = [prefix]+od
         url = 'http://s3.amazonaws.com/%s/%s%s'%(bucket, '/'.join(od), suffix)
-        log.info("downloading %s to %s"%(url, op))
-        self._download(url, op)
+        key = '%s%s'%('/'.join(od), suffix)
+        #log.info("downloading %s to %s"%(url, op))
+        log.info("downloading from bucket %s the key %s to %s"%(bucket, key, op))
+        self._download_s3(bucket, key, op)
+        #self._download(url, op)
         
     def tile_path(self, z, x, y):
         raise NotImplementedError
@@ -62,6 +65,9 @@ class ElevationDownloader(object):
 
     def _download(self, url, op):
         download.download(url, op)
+
+    def _download_s3(self, bucket, key, op):
+        download.download_s3(bucket, key, op)
 
 class ElevationGeotiffDownloader(ElevationDownloader):
     def __init__(self, *args, **kwargs):
